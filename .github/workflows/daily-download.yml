@@ -48,8 +48,8 @@ jobs:
 
     - name: Commit and Push changes
       run: |
-        git config --global user.name "Shivam Khandelwal (auto commit)"
-        git config --global user.email "noreply@shivamkhandelwal.in"
+        git config --global user.name "execve (auto commit)"
+        git config --global user.email "execve@gmail.com"
         
         git add .
         
