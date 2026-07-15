@@ -1,15 +1,12 @@
 name: Daily Forex Rate Download
-
 on:
   workflow_dispatch: # Allows manual trigger from the GitHub "Actions" tab
-
 jobs:
   download-pdf:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
