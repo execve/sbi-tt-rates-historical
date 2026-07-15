@@ -31,33 +31,15 @@ jobs:
         
         mkdir -p "$YEAR/$MONTH"
         
-        # Create a clean python script file to avoid YAML parsing bugs
-        cat << 'EOF' > download.py
-import sys
-from curl_cffi import requests
+        # Write the python execution script to a standalone file
+        # This completely isolates python colons (:) from the YAML compiler
+        printf "import sys\nfrom curl_cffi import requests\n\nurl = 'https://sbi.bank.in/documents/16012/1400784/FOREX_CARD_RATES.pdf'\noutput_path = sys.argv[1]\n\ntry:\n    response = requests.get(url, impersonate='chrome120', timeout=30)\n    if response.status_code == 200:\n        with open(output_path, 'wb') as f:\n            f.write(response.content)\n        print('Download successful!')\n    else:\n        print('Failed to download. Status code:', response.status_code)\n        sys.exit(1)\nexcept Exception as e:\n    print('An error occurred:', e)\n    sys.exit(1)\n" > run_download.py
 
-url = 'https://sbi.bank.in/documents/16012/1400784/FOREX_CARD_RATES.pdf'
-output_path = sys.argv[1]
-
-try:
-    response = requests.get(url, impersonate='chrome120', timeout=30)
-    if response.status_code == 200:
-        with open(output_path, 'wb') as f:
-            f.write(response.content)
-        print('Download successful!')
-    else:
-        print(f'Failed to download. Status code: {response.status_code}')
-        sys.exit(1)
-except Exception as e:
-    print(f'An error occurred: {e}')
-    sys.exit(1)
-EOF
-
-        # Run the Python script with the output path as an argument
-        python download.py "$YEAR/$MONTH/$FILENAME"
+        # Run the isolated script
+        python run_download.py "$YEAR/$MONTH/$FILENAME"
         
         # Clean up the script file
-        rm download.py
+        rm run_download.py
 
     - name: Commit and Push changes
       run: |
